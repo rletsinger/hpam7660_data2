@@ -1,0 +1,103 @@
+---
+title: "Tutorial 2"
+author: "Rebecca Letsinger"
+date: "February 20, 2024"
+output: pdf_document
+---
+Step 1:  In this step, I installed the packages and opened each library
+```{r}
+library(dplyr)
+library(nycflights13)
+```
+
+Step 2: In this step, I filtered through the data set to specifically focus on flights within United Airlines.
+```{r}
+united_flights <- flights %>% 
+  filter(carrier == "UA")
+```
+
+Step 3: In this step, I used the used the same filtered data set using United Airlines flights. The origin function was added to restrict the data to flights that specifically departed from Laguardia. Both sets of code gave me the same information. 
+```{r}
+united_flights <- flights %>% 
+  filter(carrier== "UA"&(origin=="LGA"))
+glimpse(united_flights)
+```
+
+```{r}
+united_flights <- flights %>% 
+  filter(carrier == "UA") %>%
+  filter(origin=="LGA")
+glimpse(united_flights)
+```
+Step 4: In this step, the data was restricted even more by only including flights that departed from Laguardia and arrived in Orlando or Denver. I used the "or" function to include both arrival cities.
+```{r}
+united_flights <- flights %>% 
+  filter(carrier == "UA") %>%
+  filter(origin=="LGA") %>%
+  filter(dest == "ORD" | dest == "DEN")
+```
+
+Step 5: In this step, I used the similar format to the previous question to include all 4 cities. 
+```{r}
+many_airports <- flights %>% 
+  filter(carrier == "UA") %>%
+  filter(origin=="LGA") %>%
+  filter(dest %in% c("IAH", "CLE", "ORD", "DEN"))
+```
+
+Step 6: This step summarized the mean and standard deviation for the arrival delays all the flight data. The second step omitted the missing observations to see the correct results. 
+```{r}
+summary_airports <- flights %>% 
+  summarize(mean = mean(arr_delay), std_dev = sd(arr_delay))
+summary_airports
+```
+
+```{r}
+summary_airports <- flights %>% 
+  summarize(mean = mean(arr_delay, na.rm = TRUE),   std_dev = sd(arr_delay, na.rm = TRUE))
+summary_airports
+```
+
+```{r}
+library(knitr)
+kable(summary_airports)
+```
+
+Step 7: This step puts all of our flight delay information into one clear table.
+```{r}
+summary_airports <- flights %>% 
+  summarize(mean = mean(arr_delay, na.rm = TRUE),
+  std_dev = sd(arr_delay, na.rm = TRUE),
+  count= n())
+summary_airports
+```
+
+```{r}
+kable(summary_airports)
+```
+
+Group 8: This step takes out delay data set and breaks it down by month 
+```{r}
+by_month <- flights %>% 
+  group_by(month) %>% 
+  summarize(mean = mean(arr_delay, na.rm = TRUE),
+  std_dev = sd(arr_delay, na.rm = TRUE),
+  count= n())
+by_month
+```
+
+```{r}
+kable(by_month)
+```
+
+Step 9: This step breaks the data down by month and adds additional variables
+```{r}
+by_origin_month <- flights %>% 
+  group_by(origin, month) %>% 
+  summarize(count = n())
+by_origin_month
+```
+
+```{r}
+kable(by_origin_month)
+```
